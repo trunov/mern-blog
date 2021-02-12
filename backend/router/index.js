@@ -15,7 +15,6 @@ const {
   errorLogger,
 } = require('../middlewares/logger');
 
-const auth = require('../middlewares/auth');
 const {
   validateUserLogin,
   validateUserSignup,
@@ -26,8 +25,6 @@ router.use(requestLogger);
 router.post('/signin', validateUserLogin, login);
 
 router.post('/signup', validateUserSignup, createUser);
-
-router.use(auth);
 
 router.use('/users', users);
 
