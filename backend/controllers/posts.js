@@ -17,7 +17,7 @@ module.exports.getPosts = (req, res, next) => {
 
 
 module.exports.searchPost = (req, res, next) => {
-  Article.find({keyword: req.body.keyword})
+  Article.find({keyword: req.params.postKeyword})
     .then((posts) => {
       if (!posts) {
         throw new NotFoundError("Статьи не найдены");

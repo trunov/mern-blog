@@ -1,7 +1,7 @@
 import React from "react";
 import "./Card/Card.css";
 
-function Card({ text, id, image, comments, keyword, date, title, loggedIn }) {
+function Card({ handlePostDelete, text, id, image, comments, keyword, date, title, loggedIn }) {
   // const card = {
   //   _id: id,
   //   link: src,
@@ -10,26 +10,12 @@ function Card({ text, id, image, comments, keyword, date, title, loggedIn }) {
   //   likes: likes,
   // };
 
-  const isOwn = true;
-  const isLiked = false;
-
-  const deleteButton = `cards__element-remove ${
-    isOwn ? "" : "cards__element-remove_hidden"
-  }`;
-  const likeButton = `cards__element-button ${
-    isLiked ? "cards__element-button_active" : ""
-  }`;
-
   function handleClick() {
     // onCardClick({ link: src, name: title });
   }
 
-  function handleLike() {
-    // onCardLike(card);
-  }
-
   function handleDelete() {
-    // onCardDelete(card);
+    handlePostDelete(id);
   }
 
   return (
@@ -74,7 +60,7 @@ function Card({ text, id, image, comments, keyword, date, title, loggedIn }) {
 
     <li className="news-card">
       {loggedIn && (
-        <button className="news-card__marker">
+        <button onClick={handleDelete} className="news-card__marker">
           <svg
             width="18"
             height="19"
@@ -104,7 +90,10 @@ function Card({ text, id, image, comments, keyword, date, title, loggedIn }) {
             year: "numeric",
           })}
         </p>
-        <h3 className="news-card__title">{title}</h3>
+        <h3 className="news-card__title">
+          {title}{" "}
+          <span className="news-card__title_span">({comments.length})</span>
+        </h3>
         <p className="news-card__description">{text}</p>
       </div>
     </li>

@@ -138,3 +138,8 @@
   transition: all 0.3s ease-in-out;
   z-index: 1;
 }
+
+.news-card__title_span {
+  font-size: 26px;
+  color: #EDAF09
+}

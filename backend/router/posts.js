@@ -16,7 +16,7 @@ const {
 } = require('../middlewares/celebrateHandlers');
 
 router.get('/', getPosts);
-router.get('/keyword', searchPost);
+router.get('/:postKeyword', searchPost);
 router.post('/', auth, validatePost, createPost);
 router.delete('/:articleId', validateArticleId, deletePost);
 router.put('/:articleId', createComment);

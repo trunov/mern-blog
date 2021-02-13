@@ -19,29 +19,39 @@ class Api {
   getInitialPosts() {
     return fetch(`${this._token}/articles`, {
       method: "GET",
-      headers: {   
+      headers: {
         "Content-type": `${this._contentType}`,
       },
     }).then(handleOriginalResponse);
   }
 
-  addNewCard({ name, link }) {
-    return fetch(`${this._token}/cards`, {
+  searchPosts(input) {
+    return fetch(`${this._token}/articles/${input}`, {
+      method: "GET",
+      headers: {
+        "Content-type": `${this._contentType}`,
+      },
+    }).then(handleOriginalResponse);
+  }
+
+  addNewPost({ keyword, title, text, image }) {
+    return fetch(`${this._token}/articles`, {
       method: "POST",
       headers: {
-        // authorization: this._authorization,
         authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": this._contentType,
       },
       body: JSON.stringify({
-        name,
-        link,
+        keyword,
+        title,
+        text,
+        image,
       }),
     }).then(handleOriginalResponse);
   }
 
   deleteCard(cardId) {
-    return fetch(`${this._token}/cards/${cardId}`, {
+    return fetch(`${this._token}/articles/${cardId}`, {
       method: "DELETE",
       headers: {
         // authorization: this._authorization,
@@ -105,7 +115,6 @@ class Api {
 
 // экземпляра класса Api
 export const api = new Api({
-
   baseUrl: "http://localhost:3000",
   headers: {
     // authorization: "36046fe7-1e8e-4a22-8e60-7f2eb2d5b2d8",

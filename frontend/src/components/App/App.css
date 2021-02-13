@@ -33,6 +33,9 @@
   transition: opacity 0.1s linear;
   text-decoration: none;
   margin-right: 40px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .header__paragraph:hover {
@@ -58,7 +61,7 @@
   margin-top: 40px;
   display: flex;
   align-items: center;
-  
+  flex-direction: column;
 }
 
 .profile__add-button:hover {

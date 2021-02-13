@@ -5,15 +5,27 @@ import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
 import Main from "../Main";
+import EditPostPopup from "../EditPostPopup";
 import { api } from "../../utils/api";
 import * as auth from "../../utils/auth";
 import Login from "../Login";
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [cards, setCards] = React.useState([]);
-  const [userData, setUserData] = React.useState([]);
+
+  const [isEditPostPopup, setIsEditPostPopup] = React.useState(false);
+
+  const [emptySearch, setEmptySearch] = React.useState(false);
 
   const history = useHistory();
+
+  function handleEditPostClick() {
+    setIsEditPostPopup(true);
+  }
+
+  function closeAllPopups() {
+    setIsEditPostPopup(false);
+  }
 
   function handleLogin(email, password) {
     // console.log(email, password);
@@ -36,11 +48,46 @@ function App() {
       });
   }
 
+  function handleAddPost(keyword, title, text, image) {
+    api
+      .addNewPost({ keyword, title, text, image })
+      .then((newCard) => {
+        setCards([...cards, newCard]);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(`Error ${err}`));
+  }
+
+  function handleSearch(input) {
+    api
+      .searchPosts(input)
+      .then((results) => {
+        if (results.length === 0) {
+          setEmptySearch(true);
+          console.log("It is empty");
+        } else {
+          setEmptySearch(false);
+        }
+        setupCards(results);
+      })
+      .catch((err) => console.log(`Error ${err}`));
+  }
+
   function signOut() {
     setLoggedIn(false);
-    setUserData("");
     localStorage.removeItem("token");
     history.push("/");
+  }
+
+  function handlePostDelete(id) {
+    api
+      .deleteCard(id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== id);
+        // Обновляем стейт
+        setCards(newCards);
+      })
+      .catch((err) => console.log(`Error ${err}`));
   }
 
   function setupCards(cards) {
@@ -67,7 +114,7 @@ function App() {
           if (res) {
             setLoggedIn(true);
             // setUserData(res.data.email);
-            setUserData(res.email);
+           
             history.push("/");
           }
         })
@@ -80,8 +127,9 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    console.log(api.getInitialPosts())
-    api.getInitialPosts()
+    console.log(api.getInitialPosts());
+    api
+      .getInitialPosts()
       .then((results) => {
         setupCards(results);
       })
@@ -93,45 +141,25 @@ function App() {
       <Header loggedIn={loggedIn} signOut={signOut} />
       <Switch>
         <Route exact path="/">
-          <Main loggedIn={loggedIn} cards={cards} />
+          <Main
+            emptySearch={emptySearch}
+            loggedIn={loggedIn}
+            cards={cards}
+            handleSearch={handleSearch}
+            handlePostDelete={handlePostDelete}
+            handleEditPostClick={handleEditPostClick}
+          />
         </Route>
         <Route path="/admin">
           <Login handleLogin={handleLogin} />
         </Route>
       </Switch>
       <Footer />
-
-      {/* <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-        /> */}
-
-      {/* <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}
-        />
-
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        />
-
-        <PopupWithForm
-          name={"confirm"}
-          title={"Вы уверены?"}
-          buttonTitle={"Да"}
-          onClose={closeAllPopups}
-        ></PopupWithForm>
-
-        <ImagePopup
-          link={selectedCard.link}
-          title={selectedCard.title}
-          isOpen={selectedCard.isOpen}
-          onClose={closeAllPopups}
-        /> */}
+      <EditPostPopup
+        handleAddPost={handleAddPost}
+        isOpen={isEditPostPopup}
+        onClose={closeAllPopups}
+      />
     </div>
   );
 }

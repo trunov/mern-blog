@@ -12,12 +12,9 @@ function Header({ email, signOut, loggedIn }) {
       <div className="header__wrap">
         <p className="header__email">{email}</p>
         {loggedIn && (
-          <Link
-            onClick={signOut}
-            className="header__paragraph"
-          >
+          <button onClick={signOut} className="header__paragraph">
             Выйти
-          </Link>
+          </button>
         )}
       </div>
     </header>

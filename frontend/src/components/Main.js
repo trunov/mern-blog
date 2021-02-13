@@ -1,27 +1,29 @@
 import React from "react";
 import Card from "./Card";
+import SearchForm from "./SearchForm/SearchForm";
+import NotFound from "./NotFound/NotFound";
 
 function Main({
-  onEditProfile,
-  onAddPlace,
-  onEditAvatar,
-  onCardClick,
   cards,
-  onCardLike,
-  onCardDelete,
   loggedIn,
+  handleSearch,
+  emptySearch,
+  handlePostDelete,
+  handleEditPostClick
 }) {
   return (
     <main className="content">
-      {loggedIn && (
-        <section className="profile">
+      <section className="profile">
+        <SearchForm handleSearch={handleSearch} />
+        {loggedIn && (
           <button
             className="profile__add-button"
             type="button"
-            onClick={onAddPlace}
+            onClick={handleEditPostClick}
           ></button>
-        </section>
-      )}
+        )}
+        {emptySearch && <NotFound />}
+      </section>
 
       <section className="cards">
         <ul className="cards__container">
@@ -32,12 +34,13 @@ function Main({
               image={item.image}
               keyword={item.keyword}
               text={item.text}
-              comments ={item.comments}
+              comments={item.comments}
               date={item.date}
               title={item.title}
               loggedIn={loggedIn}
+              handlePostDelete={handlePostDelete}
             />
-          ))}
+          )).reverse()}
         </ul>
       </section>
     </main>
