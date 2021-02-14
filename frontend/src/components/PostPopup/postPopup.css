@@ -1,0 +1,14 @@
+.popup__full-img {
+  max-width: 75vw;
+  max-height: 75vh;
+}
+
+.popup__img-container {
+  background-color: #fff;
+}
+
+.popup__title {
+  font-size: 18px;
+  line-height: 22px;
+  color: #000;
+}

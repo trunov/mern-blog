@@ -61,14 +61,16 @@ class Api {
     }).then(handleOriginalResponse);
   }
 
-  changeLikeCardStatus(cardId, isLiked) {
-    return fetch(`${this._token}/cards/${cardId}/likes`, {
-      method: isLiked ? "PUT" : "DELETE",
+  createComment(cardId, postedBy, text) {
+    return fetch(`${this._token}/articles/${cardId}`, {
+      method: "PUT",
       headers: {
-        // authorization: this._authorization,
-        authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": this._contentType,
       },
+      body: JSON.stringify({
+        postedBy,
+        text,
+      }),
     }).then(handleOriginalResponse);
   }
 
@@ -98,16 +100,15 @@ class Api {
     }).then(handleOriginalResponse);
   }
 
-  editAvatar({ avatar }) {
-    return fetch(`${this._token}/users/me/avatar`, {
-      method: "PATCH",
+  deleteComment(cardId, commentId) {
+    return fetch(`${this._token}/articles/comments/${cardId}`, {
+      method: "DELETE",
       headers: {
-        // authorization: this._authorization,
         authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": this._contentType,
       },
       body: JSON.stringify({
-        avatar: `${avatar}`,
+        commentId
       }),
     }).then(handleOriginalResponse);
   }

@@ -1,7 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Card/Card.css";
 
-function Card({ handlePostDelete, text, id, image, comments, keyword, date, title, loggedIn }) {
+function Card({
+  handlePostDelete,
+  text,
+  id,
+  image,
+  comments,
+  keyword,
+  date,
+  title,
+  loggedIn,
+}) {
   // const card = {
   //   _id: id,
   //   link: src,
@@ -90,11 +101,11 @@ function Card({ handlePostDelete, text, id, image, comments, keyword, date, titl
             year: "numeric",
           })}
         </p>
-        <h3 className="news-card__title">
+        <Link className="news-card__title" to={`/posts/${id}`}>
           {title}{" "}
           <span className="news-card__title_span">({comments.length})</span>
-        </h3>
-        <p className="news-card__description">{text}</p>
+        </Link>
+        {/* <h3 className="news-card__title">{title} </h3> */}
       </div>
     </li>
   );

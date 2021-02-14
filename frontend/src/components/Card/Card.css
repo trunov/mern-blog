@@ -16,7 +16,6 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  height: 270px;
 }
 
 .news-card__date {
@@ -42,6 +41,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   color: #000;
+  text-decoration: none;
 }
 
 .news-card__description {

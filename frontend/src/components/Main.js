@@ -30,6 +30,7 @@ function Main({
           {cards.map((item) => (
             <Card
               key={item._id}
+              num={item.id}
               id={item._id}
               image={item.image}
               keyword={item.keyword}

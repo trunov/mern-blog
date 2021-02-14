@@ -1,11 +1,13 @@
 import "./App.css";
 
 import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
 import Main from "../Main";
 import EditPostPopup from "../EditPostPopup";
+import PostPopup from "../PostPopup";
+import Post from "../Post/Post";
 import { api } from "../../utils/api";
 import * as auth from "../../utils/auth";
 import Login from "../Login";
@@ -13,7 +15,13 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [cards, setCards] = React.useState([]);
 
+  const [selectedPost, setSelectedPost] = React.useState({ isOpen: false });
+
   const [isEditPostPopup, setIsEditPostPopup] = React.useState(false);
+
+  const [post, setPost] = React.useState({});
+  const [postComments, setPostComments] = React.useState([]);
+
 
   const [emptySearch, setEmptySearch] = React.useState(false);
 
@@ -24,8 +32,11 @@ function App() {
   }
 
   function closeAllPopups() {
+    
     setIsEditPostPopup(false);
   }
+
+  
 
   function handleLogin(email, password) {
     // console.log(email, password);
@@ -54,6 +65,15 @@ function App() {
       .then((newCard) => {
         setCards([...cards, newCard]);
         closeAllPopups();
+      })
+      .catch((err) => console.log(`Error ${err}`));
+  }
+
+  function handleDeleteComment(cardId, commentId) {
+    api
+      .deleteComment(cardId, commentId)
+      .then((comments) => {
+        setPostComments(comments);
       })
       .catch((err) => console.log(`Error ${err}`));
   }
@@ -91,7 +111,7 @@ function App() {
   }
 
   function setupCards(cards) {
-    console.log(cards);
+    // console.log(cards);
     setCards(
       cards.map((item) => ({
         _id: item._id,
@@ -115,7 +135,7 @@ function App() {
             setLoggedIn(true);
             // setUserData(res.data.email);
            
-            history.push("/");
+            
           }
         })
         .catch((err) => console.log(err));
@@ -127,7 +147,6 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    console.log(api.getInitialPosts());
     api
       .getInitialPosts()
       .then((results) => {
@@ -135,6 +154,24 @@ function App() {
       })
       .catch((err) => console.log(`Error ${err}`));
   }, []);
+
+  function findPost(id) {
+    let findPost = cards.find(post => post._id === id);
+    setPost(findPost);
+    setPostComments(findPost.comments);
+  }
+
+  function submitComment(cardId, postedBy, text) {
+    api
+      .createComment(cardId, postedBy, text)
+      .then((newlyGeneratedComments) => {
+        let last = newlyGeneratedComments.length - 1;
+        let lastComment = newlyGeneratedComments[last];
+        console.log(lastComment);
+        setPostComments([...postComments, lastComment]);
+      })
+      .catch((err) => console.log(`Error ${err}`));
+  }
 
   return (
     <div className="page">
@@ -153,6 +190,9 @@ function App() {
         <Route path="/admin">
           <Login handleLogin={handleLogin} />
         </Route>
+        <Route exact path="/posts/:id">
+          <Post loggedIn={loggedIn} submitComment={submitComment} postComments={postComments} handleDeleteComment={handleDeleteComment} findPost={findPost} post={post} cards={cards}/>
+        </Route>
       </Switch>
       <Footer />
       <EditPostPopup
@@ -160,6 +200,7 @@ function App() {
         isOpen={isEditPostPopup}
         onClose={closeAllPopups}
       />
+      <PostPopup isOpen={selectedPost.isOpen}/>
     </div>
   );
 }

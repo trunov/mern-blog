@@ -68,7 +68,7 @@ module.exports.createComment = (req, res, next) => {
       if (!article) {
         throw new NotFoundError("Нет поста с таким id");
       } else {
-        res.send(article);
+        res.send(article.comments);
       }
     })
     .catch(next);
@@ -83,6 +83,23 @@ module.exports.deletePost = (req, res, next) => {
       } else {
         res.send(post);
       }
+    })
+    .catch(next);
+};
+
+module.exports.deleteComment = (req, res, next) => {
+  Article.findByIdAndUpdate(
+    req.params.articleId,
+    { $pull: { comments: { _id: req.body.commentId } } },
+    { new: true }
+  )
+    .then((article) => {
+      if (!article) {
+        throw new NotFoundError(
+          "Карточки с таким id не существует, невозможно забрать лайк"
+        );
+      }
+      res.send(article.comments);
     })
     .catch(next);
 };
